@@ -1,0 +1,16 @@
+backend:
+  name: test-repo
+  branch: main # Branch to update (optional; defaults to master)
+media_folder: public/img
+public_folder: img
+collections:
+  - name: "products"
+    label: "Products"
+    folder: "content/products"
+    create: true
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "SKU", name: "sku", widget: "string" }
+      - { label: "Categories", name: "categories", widget: list }
+      - { label: "Tags", name: "tags", widget: list }
+      - { label: "Body", name: "body", widget: "markdown" }

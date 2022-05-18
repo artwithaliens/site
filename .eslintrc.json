@@ -1,3 +1,20 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next/core-web-vitals", "artwithaliens"],
+  "rules": {
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_raw"]
+      }
+    ],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "react/no-danger": "off",
+    "react/react-in-jsx-scope": "off"
+  }
 }
