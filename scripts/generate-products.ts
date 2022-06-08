@@ -1,8 +1,8 @@
 import { parse } from "csv-parse/sync"
-import fs from "fs"
 import slugger from "github-slugger"
 import { camelCase, omit } from "lodash"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 import { stringify } from "yaml"
 
 const content = fs.readFileSync(
@@ -20,7 +20,7 @@ const products: any[] = parse(content, {
     ) {
       return value.split(",").map((v) => v.trim())
     }
-    if (value.match(/^[\d\.]+$/)) {
+    if (/^[\d.]+$/.test(value)) {
       return Number(value)
     }
     if (value === "") {
@@ -33,21 +33,23 @@ const products: any[] = parse(content, {
   trim: true,
 })
 
-products.forEach((product) => {
-  if (product.type === "simple") {
-    fs.writeFileSync(
-      path.resolve(
-        __dirname,
-        `../content/products/${slugger
-          .slug(product.name)
-          .replace(/-+/g, "-")}.md`
-      ),
-      `---
+products
+  .filter((product) => product.published === 1)
+  .forEach((product) => {
+    if (product.type === "simple") {
+      fs.writeFileSync(
+        path.resolve(
+          __dirname,
+          `../content/products/${slugger
+            .slug(product.name)
+            .replace(/-+/g, "-")}.md`
+        ),
+        `${`---
 ${stringify(omit(product, ["description", "type", "shortDescription"]))}---
 
 ${product.shortDescription?.replace(/\\n/g, "\n") ?? ""}
 
-${product.description?.replace(/\\n/g, "\n") ?? ""}`.trimEnd() + "\n"
-    )
-  }
-})
+${product.description?.replace(/\\n/g, "\n") ?? ""}`.trimEnd()}\n`
+      )
+    }
+  })

@@ -7,19 +7,21 @@ import { css } from "@nextui-org/react"
 import { allProducts, Product } from "contentlayer/generated"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Head from "next/head"
-import useAccessToken from "../../hooks/use-get-token"
+import useAccessToken from "../../hooks/use-access-token"
 
-const ProductPage: NextPage<{
+type Props = {
   clientId: string
   endpoint: string
-  product: Product
-}> = ({ clientId, endpoint, product }) => {
+  product?: Product
+}
+
+const ProductPage: NextPage<Props> = ({ clientId, endpoint, product }) => {
   const accessToken = useAccessToken({
     clientId,
     endpoint,
   })
 
-  return (
+  return product == null ? null : (
     <CommerceLayer accessToken={accessToken} endpoint={endpoint}>
       <Head>
         <title>{product.name}</title>
@@ -43,19 +45,19 @@ const ProductPage: NextPage<{
   )
 }
 
+export default ProductPage
+
 export const getStaticPaths: GetStaticPaths = () => ({
   paths: allProducts.map((product) => product.url),
   fallback: false,
 })
 
-export const getStaticProps: GetStaticProps = ({ params }) => ({
+export const getStaticProps: GetStaticProps<Props> = ({ params }) => ({
   props: {
-    clientId: process.env.CL_CLIENT_ID,
-    endpoint: process.env.CL_ENDPOINT,
+    clientId: `${process.env.CL_CLIENT_ID}`,
+    endpoint: `${process.env.CL_ENDPOINT}`,
     product: allProducts.find((product) =>
       product._raw.flattenedPath.endsWith([params?.slug].flat().join("/"))
     ),
   },
 })
-
-export default ProductPage

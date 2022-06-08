@@ -2,7 +2,7 @@ import { getSalesChannelToken } from "@commercelayer/js-auth"
 import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
 
-interface UseAccessTokenOptions {
+type UseAccessTokenOptions = {
   clientId: string
   endpoint: string
   scope?: string

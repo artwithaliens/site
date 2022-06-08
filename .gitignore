@@ -19,6 +19,7 @@
 .DS_Store
 *.pem
 *.csv
+*.tsbuildinfo
 
 # debug
 npm-debug.log*
